@@ -2,6 +2,9 @@ package my.homework.ru;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TicketManagerTest {
@@ -170,5 +173,57 @@ public class TicketManagerTest {
         assertArrayEquals(expected, actual);
 
         assertThrows(NotFoundException.class, () -> manager.removeById(ticket1.getId()));
+    }
+
+    @Test
+    public void testGetDuration() {
+
+        Ticket ticket = new Ticket(1, 200, "MSK", "SPB", 93);
+        int duration = ticket.getDuration();
+        System.out.println("Время в пути: " + duration + " минуты");
+    }
+
+    @Test
+    public void testRepoRemoveById() {
+        Ticket ticket1 = new Ticket(1, 200, "MSK", "SPB", 93);
+        Ticket ticket2 = new Ticket(2, 100, "MSK", "SPB", 98);
+        Ticket ticket3 = new Ticket(3, 200, "MSK", "UFA", 186);
+        Ticket ticket4 = new Ticket(4, 400, "MSK", "SPB", 122);
+        Ticket ticket5 = new Ticket(5, 800, "UFA", "SPB", 222);
+        Ticket ticket6 = new Ticket(6, 200, "MSK", "SPB", 130);
+
+        TicketRepository repository = new TicketRepository();
+        repository.add(ticket1);
+        repository.add(ticket2);
+        repository.add(ticket3);
+        repository.add(ticket4);
+        repository.add(ticket5);
+        repository.add(ticket6);
+
+        repository.removeById(3);
+        List<Ticket> expected1 = Arrays.asList(ticket1, ticket2, ticket4, ticket5, ticket6);
+        assertEquals(expected1, repository.findAll());
+    }
+
+    @Test
+    public void testRepoRemoveByIdNotFoundException() {
+        Ticket ticket1 = new Ticket(1, 200, "MSK", "SPB", 93);
+        Ticket ticket2 = new Ticket(2, 100, "MSK", "SPB", 98);
+        Ticket ticket3 = new Ticket(3, 200, "MSK", "UFA", 186);
+        Ticket ticket4 = new Ticket(4, 400, "MSK", "SPB", 122);
+        Ticket ticket5 = new Ticket(5, 800, "UFA", "SPB", 222);
+        Ticket ticket6 = new Ticket(6, 200, "MSK", "SPB", 130);
+
+        TicketRepository repository = new TicketRepository();
+        repository.add(ticket1);
+        repository.add(ticket2);
+        repository.add(ticket3);
+        repository.add(ticket4);
+        repository.add(ticket5);
+        repository.add(ticket6);
+
+        assertThrows(NotFoundException.class, () -> {
+            repository.removeById(7);
+        });
     }
 }
