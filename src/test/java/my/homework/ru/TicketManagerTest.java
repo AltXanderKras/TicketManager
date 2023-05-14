@@ -7,9 +7,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 public class TicketManagerTest {
     @Test
-    public void testFindAll() {
+    public void shouldFindMultipleTickets() {
         TicketRepository repository = new TicketRepository();
         TicketManager manager = new TicketManager(repository);
 
@@ -38,7 +39,7 @@ public class TicketManagerTest {
     }
 
     @Test
-    public void testFindAllNoMatches() {
+    public void shouldNotFindTickets() {
         TicketRepository repository = new TicketRepository();
         TicketManager manager = new TicketManager(repository);
 
@@ -80,7 +81,7 @@ public class TicketManagerTest {
         manager.add(ticket3);
 
         Ticket expected = ticket2;
-        Ticket actual = manager.getById(2);
+        Ticket actual = manager.getById(2, 1);
         assertEquals(expected, actual);
     }
 
@@ -127,7 +128,7 @@ public class TicketManagerTest {
         manager.add(ticket3);
 
         Ticket expected = ticket2;
-        Ticket actual = manager.getById(2);
+        Ticket actual = manager.getById(2, 1);
 
         assertEquals(expected, actual);
     }
@@ -146,11 +147,11 @@ public class TicketManagerTest {
         manager.add(ticket3);
 
         Ticket expected = ticket2;
-        Ticket actual = manager.getById(2);
+        Ticket actual = manager.getById(2, 1);
         assertEquals(expected, actual);
 
         assertThrows(NotFoundException.class, () -> {
-            manager.getById(4);
+            manager.getById(4, 1);
         });
     }
 
@@ -226,4 +227,34 @@ public class TicketManagerTest {
             repository.removeById(7);
         });
     }
+
+    @Test
+    void shouldFindOneTicket() {
+        TicketRepository repository = new TicketRepository();
+        TicketManager manager = new TicketManager(repository);
+
+        Ticket ticket1 = new Ticket(1, 200, "MSK", "SPB", 93);
+        Ticket ticket2 = new Ticket(2, 100, "MSK", "SPB", 98);
+        Ticket ticket3 = new Ticket(3, 200, "MSK", "UFA", 186);
+        Ticket ticket4 = new Ticket(4, 400, "MSK", "SPB", 122);
+        Ticket ticket5 = new Ticket(5, 800, "UFA", "SPB", 222);
+        Ticket ticket6 = new Ticket(6, 200, "MSK", "SPB", 130);
+        Ticket ticket7 = new Ticket(7, 300, "NEW", "LA", 243);
+        Ticket ticket8 = new Ticket(8, 500, "MSK", "SPB", 99);
+
+        manager.add(ticket1);
+        manager.add(ticket2);
+        manager.add(ticket3);
+        manager.add(ticket4);
+        manager.add(ticket5);
+        manager.add(ticket6);
+        manager.add(ticket7);
+        manager.add(ticket8);
+
+        Ticket[] expected = {ticket3};
+        Ticket[] actual = manager.findAll("MSK", "UFA");
+        assertArrayEquals(expected, actual);
+    }
+
+
 }

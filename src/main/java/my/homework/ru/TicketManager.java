@@ -31,7 +31,7 @@ public class TicketManager {
         return result;
     }
 
-    public Ticket getById(int id) {
+    public Ticket getById(int id, int i) {
         Ticket ticket = repository.findById(id);
         if (ticket == null) {
             throw new NotFoundException(id);
